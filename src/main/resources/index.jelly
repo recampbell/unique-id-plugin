@@ -1,0 +1,8 @@
+<!--
+  This view is used to render the installed plugins page.
+-->
+<div>
+  A plugin for creating unique id's for Jenkins projects, builds and folders.
+  Only intended to be used by other plugins for reporting Jenkins data to 
+  external systems.
+</div>
