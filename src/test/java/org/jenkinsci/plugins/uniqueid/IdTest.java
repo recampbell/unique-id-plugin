@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.uniqueid;
 import com.cloudbees.hudson.plugins.folder.Folder;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.model.Project;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,28 +19,29 @@ public class IdTest {
     @Test
     public void project() throws Exception {
         Project p = jenkinsRule.createFreeStyleProject();
-        assertNull(Id.getId(p));
-        Id.addIfMissing(p);
-        String id = Id.getId(p);
+        assertNull(IdStore.getId(p));
+        IdStore.makeId(p);
+        String id = IdStore.getId(p);
         AbstractBuild build = jenkinsRule.buildAndAssertSuccess(p);
-        assertNull(Id.getId(build));
-        Id.addIfMissing(build);
-        String buildId = Id.getId(build);
+
+        assertNull(IdStore.getId(build));
+        IdStore.makeId(build);
+        String buildId = IdStore.getId(build);
         jenkinsRule.jenkins.reload();
 
         AbstractProject resurrectedProject = jenkinsRule.jenkins.getItemByFullName(p.getFullName(), AbstractProject.class);
-        assertEquals(id, Id.getId(resurrectedProject));
-        assertEquals(buildId, Id.getId(resurrectedProject.getBuild(build.getId())));
+        assertEquals(id, IdStore.getId(resurrectedProject));
+        assertEquals(buildId, IdStore.getId(resurrectedProject.getBuild(build.getId())));
     }
 
     @Test
     public void folder() throws Exception {
         Folder f = jenkinsRule.jenkins.createProject(Folder.class,"folder");
-        assertNull(Id.getId(f));
-        Id.addIfMissing(f);
-        String id = Id.getId(f);
+        assertNull(IdStore.getId(f));
+        IdStore.makeId(f);
+        String id = IdStore.getId(f);
         jenkinsRule.jenkins.reload();
-        assertEquals(id, Id.getId(jenkinsRule.jenkins.getItemByFullName("folder", Folder.class)));
+        assertEquals(id, IdStore.getId(jenkinsRule.jenkins.getItemByFullName("folder", Folder.class)));
 
     }
 }
